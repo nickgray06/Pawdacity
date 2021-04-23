@@ -1,14 +1,12 @@
 import React from 'react'
 import FlipCard from './FlipCard'
 
-export default function WalkerCard({walker}) {
+export default function WalkerCard({walker, updateWalker}) {
 
   
   return (
     <div>
-      <FlipCard walker={walker}/>
-     
-      
+      <FlipCard walker={walker} updateWalker={updateWalker}/>
     </div>
   )
 }
