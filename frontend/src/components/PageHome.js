@@ -9,14 +9,6 @@ export default function PageHome() {
     <div className="home" style={{backgroundImage: `url(${background})`, height: "100vh", backgroundSize: "cover", margin: "0", padding: "20px" }}>
       <h1 className="main">Welcome to Pawdacity</h1>
       <h3 className="subheader">"Your only source for the pRRRfect cat walker."</h3>
-      {/* <AuthProvider>
-      <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: "100vh",}}>
-      <div className="w-100" style={{ maxWidth: '400px'}}>
-        <SignUp />
-      </div>
-      </Container>
-        
-      </AuthProvider> */}
     </div>
   )
 }

@@ -19,12 +19,19 @@ const useStyles = makeStyles({
   },
 });
 
-export default function FlipCard({walker}) {
+export default function FlipCard({walker, updateWalker}) {
   
   const ratingChanged = (newRating) => {
-    fetch(`http://localhost:3000/walkers/${walker.id}`)
+    console.log(newRating)
+    fetch(`http://localhost:3000/walkers/${walker.id}/add_review`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({score: newRating})
+    })
       .then(resp => resp.json())
-      .then(walker => console.log(walker))
+      .then(walker => updateWalker(walker))
   };
   const { name, image, quote, avg_rev } = walker
   const [ isFlipped, setIsFlipped ] = useState(false)

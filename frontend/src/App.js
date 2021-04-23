@@ -17,18 +17,24 @@ import PrivateRoute from './components/PrivateRoute';
 import Profile from './components/Profile';
 import ForgotPassword from './components/ForgotPassword';
 import UpdateProfile from './components/UpdateProfile';
+import {auth} from './firebase'
 
-// const {currentUser} = useAuth()
-
-// const stat
 
 export default class App extends Component {
+
+  constructor(props) {
+    super(props)
+    this.updateWalker = this.updateWalker.bind(this)
+  }
 
   state = {
     walkers: []
   }
 
   componentDidMount(){
+    auth.onAuthStateChanged(userAuth => {
+      this.setState({ user: userAuth});
+    });
     fetch('http://localhost:3000/walkers')
       .then(resp => resp.json())
       .then(walkers => this.setState({
@@ -37,34 +43,40 @@ export default class App extends Component {
   }
 
   updateWalker(updatedWalker){
-    this.setState(({walkers}) => {
-      return {
-        walkers: walkers.map((walker) => {
+    
+        const newWalkers = this.state.walkers.map((walker) => {
           if(walker.id === updatedWalker.id){
             return updatedWalker
           }else{
             return walker
           }
         })
+        this.setState({walkers: newWalkers})
       }
-    })
-  }
+  
 
   render() {
+    console.log(this.state.user)
     return (
       <div>
         <Router>
       <nav className="topnav">
-        <Link to="/" className="link">Home</Link> : ""  
-        <Link to="/cat-walkers" className="link">Cat Walkers</Link>
+        <div>
+        <Link to="/" className="link">Home</Link>  
+        {this.state.user ? <Link to="/cat-walkers" className="link">Cat Walkers</Link> : ""}
         <Link to="/about" className="link">About</Link>
-        <Link to="/signup" className="link">Sign Up</Link>
-        <Link to='/login' className="link">Log In</Link>
+        </div>
+        <div>
+        {!this.state.user && <Link to="/signup" className="link">Sign Up</Link>}
+        {!this.state.user && <Link to='/login' className="link">Log In</Link>}
+        {this.state.user && <Link to='/profile' className="link">Profile</Link>}
+        
+        </div>
       </nav>
         <AuthProvider>
         <Switch>
           <Route exact path="/"><PageHome/></Route>
-          <PrivateRoute path="/cat-walkers"><WalkerContainer walkers={this.state.walkers} /></PrivateRoute>
+          <PrivateRoute path="/cat-walkers"><WalkerContainer walkers={this.state.walkers} updateWalker={this.updateWalker} /></PrivateRoute>
           <Route path="/about"><About/></Route>
           <Route path="/signup">
             <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: "100vh",}}>
@@ -104,7 +116,7 @@ export default class App extends Component {
         </Switch>
         </AuthProvider>
     
-      <div className="footer">Here's a footer</div>
+      {/* <div className="footer">Here's a footer</div> */}
 
     </Router>
         {/* <WalkerContainer /> */}
